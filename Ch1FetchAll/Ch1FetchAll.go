@@ -34,20 +34,22 @@ func fetch(url string, ch chan<- string) {
 		ch <- fmt.Sprint(err) // send to channel ch
 		return
 	}
-	// var z string
+
 	nbytes, err := io.Copy(io.Discard, resp.Body)
-	// erro := os.WriteFile("%s string Name\n", []byte(resp.Body), 0644)
 	resp.Body.Close() // don't leak resources
 	if err != nil {
 		ch <- fmt.Sprintf("while reading %s: %v", url, err)
 		return
 	}
-	
+	erreur := os.WriteFile("output1.txt", []byte("Some test updated text"), 0644)
+	if erreur != nil {
+		fmt.Sprintf("Error: %s", erreur)
+	}
+	fmt.Print("Worked!\n")
+
 	secs := time.Since(start).Seconds()
 	ch <- fmt.Sprintf("%.2fs  %7d  %s", secs, nbytes, url)
 }
-
-func writeToFile()
 
 //!-
 
