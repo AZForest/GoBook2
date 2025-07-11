@@ -34,6 +34,19 @@ func fetch(url string, ch chan<- string) {
 		ch <- fmt.Sprint(err) // send to channel ch
 		return
 	}
+	// fmt.Printf("Results: %s\n", resp.Body)
+	sz, err := io.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Sprintf("Error: %s", err)
+	}
+
+	// fileName := url + ".txt"
+	// fmt.Print(fileName)
+	erreur := os.WriteFile("output1.txt", sz, 0644)
+	if erreur != nil {
+		fmt.Sprintf("Error: %s", erreur)
+	}
+	fmt.Print("Worked!\n")
 
 	nbytes, err := io.Copy(io.Discard, resp.Body)
 	resp.Body.Close() // don't leak resources
@@ -41,11 +54,7 @@ func fetch(url string, ch chan<- string) {
 		ch <- fmt.Sprintf("while reading %s: %v", url, err)
 		return
 	}
-	erreur := os.WriteFile("output1.txt", []byte("Some test updated text"), 0644)
-	if erreur != nil {
-		fmt.Sprintf("Error: %s", erreur)
-	}
-	fmt.Print("Worked!\n")
+	
 
 	secs := time.Since(start).Seconds()
 	ch <- fmt.Sprintf("%.2fs  %7d  %s", secs, nbytes, url)
