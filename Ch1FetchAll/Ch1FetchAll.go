@@ -35,13 +35,16 @@ func fetch(url string, ch chan<- string) {
 		return
 	}
 	
-
+	//Read in Response
 	sz, err := io.ReadAll(resp.Body)
 	if err != nil {
 		ch <- fmt.Sprintf("Error: %s", err)
 		return
 	}
+	numBytes := len(sz)
+	fmt.Printf("Num Bytes: %d\n", numBytes)
 
+	//Write To File
 	fileName := truncName(url) + ".txt"
 	fmt.Printf("FileName: %s\n", fileName)
 	erreur := os.WriteFile(fileName, sz, 0644)
@@ -51,16 +54,17 @@ func fetch(url string, ch chan<- string) {
 	}
 	fmt.Print("Worked!\n")
 
-	nbytes, err := io.Copy(io.Discard, resp.Body)
-	resp.Body.Close() // don't leak resources
-	if err != nil {
-		ch <- fmt.Sprintf("while reading %s: %v", url, err)
-		return
-	}
+	//Count bytes Only
+	// nbytes, err := io.Copy(io.Discard, resp.Body)
+	// resp.Body.Close() // don't leak resources
+	// if err != nil {
+	// 	ch <- fmt.Sprintf("while reading %s: %v", url, err)
+	// 	return
+	// }
 	
-
+	resp.Body.Close()
 	secs := time.Since(start).Seconds()
-	ch <- fmt.Sprintf("%.2fs  %7d  %s", secs, nbytes, url)
+	ch <- fmt.Sprintf("%.2fs  %7d  %s", secs, numBytes, url)
 }
 
 func truncName(s string) string {
