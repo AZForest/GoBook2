@@ -34,17 +34,20 @@ func fetch(url string, ch chan<- string) {
 		ch <- fmt.Sprint(err) // send to channel ch
 		return
 	}
-	// fmt.Printf("Results: %s\n", resp.Body)
+	
+
 	sz, err := io.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Sprintf("Error: %s", err)
+		ch <- fmt.Sprintf("Error: %s", err)
+		return
 	}
 
-	// fileName := url + ".txt"
-	// fmt.Print(fileName)
-	erreur := os.WriteFile("output1.txt", sz, 0644)
+	fileName := truncName(url) + ".txt"
+	fmt.Printf("FileName: %s\n", fileName)
+	erreur := os.WriteFile(fileName, sz, 0644)
 	if erreur != nil {
-		fmt.Sprintf("Error: %s", erreur)
+		ch <- fmt.Sprintf("Error: %s", erreur)
+		return
 	}
 	fmt.Print("Worked!\n")
 
@@ -58,6 +61,22 @@ func fetch(url string, ch chan<- string) {
 
 	secs := time.Since(start).Seconds()
 	ch <- fmt.Sprintf("%.2fs  %7d  %s", secs, nbytes, url)
+}
+
+func truncName(s string) string {
+	for i := 0; i < len(s); i++ {
+		if s[i] != '.' {
+			continue
+		}
+		s = s[i+1:]
+	}
+	for i := 0; i < len(s); i++ {
+		if s[i] != '.' {
+			continue
+		}
+		s = s[:i]
+	}
+	return s
 }
 
 //!-
