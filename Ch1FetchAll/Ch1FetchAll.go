@@ -12,18 +12,28 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
 func main() {
 	start := time.Now()
 	ch := make(chan string)
-	for _, url := range os.Args[1:] {
-		go fetch(url, ch) // start a goroutine
+	isTxtFile := checkIfTextFile(os.Args[1])
+	fmt.Printf("Bool val: %t\n", isTxtFile)
+	if (isTxtFile) {
+		txtFile := os.Args[1]
+		fmt.Printf("Name of File: %s\n", txtFile)
+		readTextFile(txtFile)
+	} else {
+		for _, url := range os.Args[1:] {
+			go fetch(url, ch) // start a goroutine
+		}
+		for range os.Args[1:] {
+			fmt.Println(<-ch) // receive from channel ch
+		}
 	}
-	for range os.Args[1:] {
-		fmt.Println(<-ch) // receive from channel ch
-	}
+	
 	fmt.Printf("%.2fs elapsed\n", time.Since(start).Seconds())
 }
 
@@ -83,5 +93,27 @@ func truncName(s string) string {
 	return s
 }
 
+func checkIfTextFile(s string) bool {
+	//sears.txt length 9 ... (0,8)
+	//s[6:]
+	//fmt.Printf("Checking If Text File: %d\n", len(s))
+	if s[len(s) - 4:] == ".txt" {
+		return true
+	}
+	return false
+}
+
+func readTextFile(str string) {
+	//reads in Specific File
+	contents, err := os.ReadFile(str);
+	if err != nil {
+		fmt.Sprintf("There was an error reading the text file: %s", str)
+	}
+	// fmt.Printf(string(contents) + "\n")
+	r := strings.Fields(string(contents))
+	for i, v := range r {
+		fmt.Printf("Index: %d, Val: %s\n", i, v)
+	}
+}
 //!-
 
