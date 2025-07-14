@@ -20,11 +20,17 @@ func main() {
 	start := time.Now()
 	ch := make(chan string)
 	isTxtFile := checkIfTextFile(os.Args[1])
-	fmt.Printf("Bool val: %t\n", isTxtFile)
+	// fmt.Printf("Bool val: %t\n", isTxtFile)
 	if (isTxtFile) {
 		txtFile := os.Args[1]
-		fmt.Printf("Name of File: %s\n", txtFile)
-		readTextFile(txtFile)
+		// fmt.Printf("Name of File: %s\n", txtFile)
+		var stringSlice []string = readTextFile(txtFile)
+		for _, url := range stringSlice {
+			go fetchWithoutWriting(url, ch) 
+		}
+		for range stringSlice {
+			fmt.Println(<-ch)
+		}
 	} else {
 		for _, url := range os.Args[1:] {
 			go fetch(url, ch) // start a goroutine
@@ -76,6 +82,26 @@ func fetch(url string, ch chan<- string) {
 	secs := time.Since(start).Seconds()
 	ch <- fmt.Sprintf("%.2fs  %7d  %s", secs, numBytes, url)
 }
+func fetchWithoutWriting(url string, ch chan<- string) {
+	// fmt.Printf("This is %s\n", url)
+	start := time.Now()
+	resp, err := http.Get(url)
+	if err != nil {
+		ch <- fmt.Sprint(err) // send to channel ch
+		return
+	}
+
+	// Count bytes Only
+	nbytes, err := io.Copy(io.Discard, resp.Body)
+	resp.Body.Close() // don't leak resources
+	if err != nil {
+		ch <- fmt.Sprintf("while reading %s: %v", url, err)
+		return
+	}
+
+	secs := time.Since(start).Seconds()
+	ch <- fmt.Sprintf("%.2fs  %7d  %s", secs, nbytes, url)
+}
 
 func truncName(s string) string {
 	for i := 0; i < len(s); i++ {
@@ -103,17 +129,18 @@ func checkIfTextFile(s string) bool {
 	return false
 }
 
-func readTextFile(str string) {
+func readTextFile(str string) []string {
 	//reads in Specific File
 	contents, err := os.ReadFile(str);
 	if err != nil {
-		fmt.Sprintf("There was an error reading the text file: %s", str)
+		fmt.Printf("There was an error reading the text file: %s", str)
 	}
 	// fmt.Printf(string(contents) + "\n")
 	r := strings.Fields(string(contents))
-	for i, v := range r {
-		fmt.Printf("Index: %d, Val: %s\n", i, v)
-	}
+	// for i, v := range r {
+	// 	fmt.Printf("Index: %d, Val: %s\n", i, v)
+	// }
+	return r
 }
 //!-
 
