@@ -26,7 +26,7 @@ func main() {
 			os.Exit(1)
 		}
 		fmt.Printf("Resp status: %s\n", resp.Status)
-		fmt.Printf("%s", d)
+		fmt.Printf("%d\n", d)
 		// if err != nil {
 		// 	fmt.Fprintf(os.Stderr, "fetch: reading %s: %v\n", url, err)
 		// 	os.Exit(1)
