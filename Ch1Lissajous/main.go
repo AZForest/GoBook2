@@ -30,13 +30,13 @@ import (
 
 
 var palette = []color.Color{
+	color.Black,
 	color.RGBA{0xff, 0x7e, 0x03, 0xe0}, //#ff7e03e0
 	color.RGBA{0x59, 0xff, 0xa3, 0x3b}, //#59ffa33b
 	color.RGBA{0xf7, 0x47, 0x2b, 0x1}, //#f7472b
 	color.RGBA{0x2b, 0xd7, 0xf7, 0xd9}, //#2bd7f7d9
 	color.RGBA{0xf7, 0x2b, 0xe8, 0xb5}, //#f72be8b5
 	color.RGBA{0xff, 0xff, 0x58, 0xde}, //#ffff58de
-	color.Black,
 	color.White}
 
 // const (
@@ -45,27 +45,18 @@ var palette = []color.Color{
 // )
 
 const (
-	 // first color in palette
-	orangeIndex = 0
-	greenIndex = 1
+	blackIndex = 0 // first color in palette
+	greenIndex = 1 // next color in palette
 	redIndex = 2
 	blueIndex = 3
 	purpleIndex = 4
 	yellowIndex = 5
-	blackIndex = 6 // next color in palette
+	orangeIndex = 6 
 	whiteIndex = 7
 )
 
-var indexMap = map[string]int {
-	"orangeIndex": 0,
-	"greenIndex": 1,
-	"redIndex": 2,
-	"blueIndex": 3,
-	"purpleIndex": 4,
-	"yellowIndex": 5,
-	"blackIndex": 6,
-	"whiteIndex": 7,
-}
+var timesIncremmented = 0;
+var currentIndex uint8 = 0;
 
 func main() {
 	//!-main
@@ -102,23 +93,29 @@ func lissajous(out io.Writer) {
 	for i := 0; i < nframes; i++ {
 		rect := image.Rect(0, 0, 2*size+1, 2*size+1)
 		img := image.NewPaletted(rect, palette)
-		// fmt.Printf("%s\n", palette[1])
 		for t := 0.0; t < cycles*2*math.Pi; t += res {
 			x := math.Sin(t)
 			y := math.Sin(t*freq + phase)
-			var colorIndexToSet uint8
-			if t > 10.0 {
-				// colorIndexToSet = 2
-				colorIndexToSet = 2
-			} else {
-				// colorIndexToSet = 3
-				colorIndexToSet = 3
+			// // One implementation
+			// var colorIndexToSet uint8
+			// if t > 10.0 {
+			// 	// colorIndexToSet = 2
+			// 	colorIndexToSet = 2
+			// } else {
+			// 	// colorIndexToSet = 3
+			// 	colorIndexToSet = 3
+			// }
+			// Another implentation
+			if timesIncremmented % 100000 == 0 {
+				updateIndex()
 			}
 			img.SetColorIndex(size+int(x*size+0.5), size+int(y*size+0.5),
 				// blueIndex,
-				//getAnIndex()
-				colorIndexToSet,
+				// getAnIndex()
+				// colorIndexToSet,
+				currentIndex,
 				)
+			timesIncremmented++
 		}
 		phase += 0.1
 		anim.Delay = append(anim.Delay, delay)
@@ -127,9 +124,8 @@ func lissajous(out io.Writer) {
 	gif.EncodeAll(out, &anim) // NOTE: ignoring encoding errors
 }
 
-func getAnIndex() uint8 {
-	var i = rand.Intn(8)
-	return uint8(i)
+func updateIndex() {
+	currentIndex = uint8(rand.Intn(7) + 1)
 }
 // var palette = []color.Color{color.White, color.Black}
 //!-main
