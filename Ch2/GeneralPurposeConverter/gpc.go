@@ -17,6 +17,12 @@ func main() {
 		}
 		//Perform all conversions on Arg
 		fmt.Print(entry) //just to avoid compiler error
+		m := FtoM(Feet(entry))
+		f := MtoF(Meters(entry))
+		fmt.Print("If a length value: \n")
+		fmt.Fprintf(os.Stdout, "%sf = %dm", entry, m)
+		fmt.Fprintf(os.Stdout, "%sm = %df", entry, f)
+
 
 	}
 }

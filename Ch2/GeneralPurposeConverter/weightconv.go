@@ -4,10 +4,10 @@ import (
 	"fmt"
 )
 
-type pounds float64
-type kilograms float64
-type grams float64
+type Pounds float64
+type Kilograms float64
+type Grams float64
 
-func (p pounds) String() string { return fmt.Sprintf("%flbs", p)}
-func (k kilograms) String() string { return fmt.Sprintf("%fkg", k)}
-func (g grams) String() string { return fmt.Sprintf("%fg", g)}
+func (p Pounds) String() string { return fmt.Sprintf("%flbs", p)}
+func (k Kilograms) String() string { return fmt.Sprintf("%fkg", k)}
+func (g Grams) String() string { return fmt.Sprintf("%fg", g)}
