@@ -1,5 +1,6 @@
+package gpcconv
+
 // Feet and Meter Types
-package generalpurposeconverter
 
 import (
 	"fmt"

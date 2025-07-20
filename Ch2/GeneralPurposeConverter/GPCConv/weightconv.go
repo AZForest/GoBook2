@@ -1,4 +1,4 @@
-package generalpurposeconverter
+package gpcconv
 
 import (
 	"fmt"
