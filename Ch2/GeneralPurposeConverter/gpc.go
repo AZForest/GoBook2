@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	// "/GoBook/Ch2/Ch2TempConv/tempconv.go"
+	//"/Users/alexforest/Desktop/GitHubProjects/GoBook/Ch2/Ch2TempConv/tempconv.go"
+	//"../Ch2TempConv"
 )
 
 func main() {
@@ -16,13 +17,14 @@ func main() {
 			os.Exit(1)
 		}
 		//Perform all conversions on Arg
-		fmt.Print(entry) //just to avoid compiler error
-		m := FtoM(Feet(entry))
-		f := MtoF(Meters(entry))
+		f := Feet(entry)
+		m := Meters(entry)
 		fmt.Print("If a length value: \n")
-		fmt.Fprintf(os.Stdout, "%sf = %dm", entry, m)
-		fmt.Fprintf(os.Stdout, "%sm = %df", entry, f)
-
+		fmt.Printf("%s = %s, %s = %s\n", f, FtoM(f), m, MtoF(m))
+		p := Pounds(entry)
+		kg := Kilograms(entry)
+		fmt.Print("If a weight value: \n")
+		fmt.Printf("%s = %s, %s = %s\n", p, PtoK(p), kg, KtoP(kg))
 
 	}
 }
