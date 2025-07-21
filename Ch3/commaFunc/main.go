@@ -21,7 +21,6 @@ func main() {
 //Wrapper Function
 func commaWrapper(str string) string {
 	s, i := findDecimal(str)
-	// fmt.Printf("This is returned from findDecimal - string: %s, index: %d\n", s, i)
 	if len(s) == 0 {
 		return commaBuffer(str)
 	}
@@ -31,17 +30,13 @@ func commaWrapper(str string) string {
 //Returns a string with commas placed in correct order using a stack implementation
 func commaBuffer(str string) string {
 	var buf bytes.Buffer
-	// fmt.Printf("Values: %v\n", str)
 	count := 0
 
 	var stack []byte
 	for i := len(str) - 1; i >= 0; i-- {
-		// fmt.Printf("Str i: %d\n", str[i])
 		if count % 3 == 0 && i != len(str) - 1 {
-			//buf.WriteString(",")
 			stack = append(stack, ',')
 		}
-		//buf.WriteByte(str[i])
 		stack = append(stack, str[i])
 		count++
 	}
