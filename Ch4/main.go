@@ -44,6 +44,9 @@ func rotate(b []byte, direction string) []byte {
 	if (direction == "left") {
 		//Rotate Left by 1
 		//[1, 2, 3, 4, 5] -> [2, 3, 4, 5, 1]
+		//Rotate Left by 3
+		//[1, 2, 3, 4, 5, 6] -> [4, 5, 6, 1, 2, 3]
+		//]
 		pH := b[0]
 		for i := range b {
 			if i != len(b) - 1 {
@@ -68,5 +71,4 @@ func rotate(b []byte, direction string) []byte {
 		}
 		return b
 	}
-	
 }
