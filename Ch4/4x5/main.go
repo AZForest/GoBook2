@@ -16,24 +16,29 @@ func main() {
 func elimDupInPlace(str []string) {
 	//["aa", "bb", "bb", "cc", "dd", "dd"]
 	prev := str[0]
-	for i := range str {
-		fmt.Printf("cVal: %s, preVal: %s\n", str[i], prev)
-		fmt.Printf("String rn : %s\n", str)
+	totalLen := len(str) //6
+	i := 0
+	for i <= totalLen {
 		if i == 0 {
+			i++
 			continue
 		}
-		if i == len(str) - 1 {
-			if (str[i] == prev) {
-				str = str[:i]
-				str = str[:len(str) - 1]
+		if str[i] == prev {
+			if i < totalLen - 1 {
+				//fmt.Printf("String rn : %s\n", str)
+				s := str[:i]
+				for _, v := range str[i+1:] {
+					s = append(s, v)
+				}
+				str = s
+			} else if i == totalLen - 1 {
+				fmt.Printf("String rnnn : %s and i: %d\n", str, i)
+				str = str[:len(str)-1]
+				break
 			}
-			break
-		}
-		if str[i] == prev && i < len(str) - 1 {
-			copy(str[:i], str[i+1:])
-			str = str[:len(str) - 1]
-			//fmt.Printf("String rn : %s\n", str)
+			totalLen--
 		}
 		prev = str[i]
+		i++
 	}
 }
