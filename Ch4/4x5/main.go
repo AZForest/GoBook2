@@ -8,9 +8,11 @@ import (
 func main() {
 	// test := "543252435    5 5 33  "
 	// testSlice := []string{"80", "a", " ", "opp", " 6 ", "6", "aaa", "d", "aa", "aa", "zoo", "asheron"}
-	//t2 := []string{"aa", "bb", "bb", "cc", "dd", "dd"}
+	// t2 := []string{"aa", "bb", "bb", "cc", "dd", "dd", "dd", "dd"}
 	t3 := []string{"dd", "dd", "dd", "aa"}
-	elim3(&t3)
+	// r := elim7(&t2)
+	elim7(&t3)
+	//fmt.Printf("V: %s\n", r)
 	fmt.Printf("%s\n", t3)
 }
 
@@ -72,15 +74,47 @@ func main() {
 		}
 	}
 
-	func elim3(s *[]string) {
-		str := *s
-		//["dd", "dd", "dd", "aa"]
-		write := 1
-		for read := 1; read < len(str); read++ {
-			if (str[read] != str[read - 1]) {
-				str[write] = str[read]
+	//modifies in place
+	func elim4(str *[]string) {
+		s := *str
+		for i := range s {
+			s[i] += "apple"
+		}
+	}
+
+	//Not in place But Correct 
+	func elim5(str []string) []string {
+		var res []string
+		for i, v := range str {
+			fmt.Printf("res: %s, i: %d\n", res, i)
+			if i == 0 || str[i] != str[i - 1] {
+				res = append(res, v)
+			}
+		}
+		return res
+	}
+
+	//Works in place?
+	func elim6(str []string) []string {
+		write := 0
+		for i, v := range str {
+			if i == 0 || str[i] != str[i - 1] {
+				str[write] = v
 				write++
 			}
 		}
-		// str = str[:write]
+		return str[:write]
+	}
+
+	//In place with a pointer
+	func elim7(s *[]string) {
+		str := *s
+		write := 0
+		for i, v := range str {
+			if i == 0 || str[i] != str[i - 1] {
+				str[write] = v
+				write++
+			}
+		}
+		*s = str[:write]
 	}
