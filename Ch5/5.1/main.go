@@ -16,9 +16,12 @@ func main() {
 		fmt.Fprintf(os.Stderr, "findlink1: %v\n", err)
 		os.Exit(1)
 	}
+	counter := 0
 	for _, link := range visit(nil, doc) {
+		counter++
 		fmt.Println(link)
 	}
+	fmt.Printf("Total Links: %d\n", counter)
 }
 
 // visit appends to links each link found in n and returns the result.
@@ -30,12 +33,14 @@ func visit(links []string, n *html.Node) []string {
 			}
 		}
 	}
-	c := n.FirstChild
+	if n.FirstChild != nil {
+		links = visit(links, n.FirstChild)
+	}
 	if n.NextSibling != nil {
 		links = visit(links, n.NextSibling)
 	}
-	if c != nil {
-		links = visit(links, c)
-	}
+	// for c := n.FirstChild; c != nil; c = c.NextSibling {
+	// 	links = visit(links, c)
+	// 	}
 	return links
 }
