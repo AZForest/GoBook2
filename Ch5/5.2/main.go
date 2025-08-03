@@ -23,7 +23,6 @@ func main() {
 	// 	fmt.Printf("Element: %s\tCount: %d\n", k, v)
 	// }
 	traverser(doc)
-
 }
 
 func traverseDoc(n *html.Node, carte map[string]int) map[string]int {
@@ -46,18 +45,28 @@ func traverseDoc(n *html.Node, carte map[string]int) map[string]int {
 // tree. Do not descend into <script> or <style> elements, since their contents are not visible
 // in a web browser.
 func traverser(n *html.Node) {
-	if n.Type == html.TextNode && n.Data != "script" && n.Data != "style"{
+	if n.Type == html.ElementNode && (n.Data == "script" || n.Data == "style") {
+		return
+	}
+	if n.Type == html.TextNode {
 		var filteredText []rune
+		var containsText bool = false
+		i := 0
 		for _, v := range n.Data {
-			if unicode.IsSpace(v) {
-				continue
+			if !unicode.IsSpace(v) {
+				containsText = true
+				break
 			}
-			filteredText = append(filteredText, v)
+			i++
 		}
-		// for _, v := range filteredText {
-		// 	fmt.Printf("Text: %v\n", v)
-		// }
-		fmt.Printf("Text: %v\n", filteredText)
+		if containsText {
+			for _, v := range n.Data[i:] {
+				filteredText = append(filteredText, v)
+			}
+		}
+		if len(filteredText) > 0 {
+			fmt.Printf("Text: %v\n", string(filteredText))
+		}
 	}
 
 	if n.FirstChild != nil {
